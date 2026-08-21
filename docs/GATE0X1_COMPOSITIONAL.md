@@ -96,6 +96,44 @@ heldout_visual_nn_joint
 
 `heldout_visual_nn_joint` is harder and does not trust those heads: the generated image is compared against all 40 image-side prototypes, and the nearest prototype must be the exact unseen class/attribute combination.
 
+## Full-run receipt
+
+The intended 12,000-image / 16-epoch run completed on seed 18001:
+
+```text
+seen_joint_acc            1.0000
+heldout_joint_acc         0.2000
+heldout_class_acc         0.7000
+heldout_attr_acc          0.4000
+seen_proto_mse            0.0079
+heldout_proto_mse         0.0571
+seen_visual_nn_joint      0.7667
+heldout_visual_nn_joint   0.0000
+```
+
+The important pattern is not undertraining. Seen joint state reaches 100% and seen visual nearest-neighbour composition reaches 23/30, while the ten held-out visual combinations remain 0/10.
+
+The shuffled-attribute-word control preserves class semantics but destroys quality semantics:
+
+```text
+seen_joint_acc            0.0000
+heldout_joint_acc         0.0000
+heldout_class_acc         1.0000
+heldout_attr_acc          0.0000
+seen_visual_nn_joint      0.0667
+heldout_visual_nn_joint   0.0000
+```
+
+### Verdict
+
+**Factor acquisition: PASS. Seen conjunctions: PASS. Systematic visual recombination: FAIL.**
+
+The merged text path learned object identity and attribute meaning, but it did not spontaneously make those factors reusable in unseen visual conjunctions. More training is not the obvious remedy: seen composition improved strongly while held-out visual composition stayed at zero.
+
+This failure motivates Gate 0X2. In X1, `small bag` is collapsed by the char-GRU into one semantic vector before the BlockNeuron ever sees it. X2 keeps object identity and quality as separate receptor populations until they meet inside the shared block.
+
+See [`GATE0X2_RECEPTOR_COMPOSITION.md`](GATE0X2_RECEPTOR_COMPOSITION.md).
+
 ## Visual receipts
 
 The default run writes:
@@ -115,9 +153,11 @@ runs/gate0x1_compositional/
 
 `heldout_trajectory.png` shows the eight recurrent BlockNeuron steps for the ten unseen text prompts.
 
+The committed full receipts are under `runs/gate0x1_full/` and `runs/gate0x1_full_attr_shuffled/`.
+
 ## Run
 
-From the repository root on the `sol/gate0x1-compositional` branch:
+From the repository root on the compositional branch:
 
 ```bash
 python3.13 experiments/gate0x1_fashion_compositional.py
@@ -156,8 +196,6 @@ If held-out attribute/composition performance remains strong under that control,
 
 ## Stop line
 
-A successful Gate 0X1 means only:
+Gate 0X1 did **not** satisfy its strong success criterion. It did establish that the system can learn the individual factors and all seen cross-modal conjunctions, while exposing the merged-text bottleneck as a plausible reason systematic visual recombination failed.
 
-> The shared text/image system learned reusable factors well enough that a text-only class/attribute combination absent from training reached an image-trained public state and visual realization consistent with both factors.
-
-It does **not** establish that BlockNeuron is uniquely responsible. A matched ordinary MLP/GRU shared-latent attacker is still required before claiming an architectural advantage.
+No BlockNeuron advantage follows from X1. A matched ordinary factorized/recurrent attacker remains required for any later positive composition result.
