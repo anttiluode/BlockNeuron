@@ -22,3 +22,4 @@ jobs:
       - run: python experiments/gate0r_passing_modes.py --steps 300
       - run: python experiments/gate0h_hysteretic_matter.py --trials 200
       - run: python experiments/gate0h1_configured_substrate.py --samples 256 --trials 100
+      - run: python experiments/gate0t_tsp.py --cities 6 --instances 3 --restarts 4 --steps 180
