@@ -132,7 +132,7 @@ The merged text path learned object identity and attribute meaning, but it did n
 
 This failure motivates Gate 0X2. In X1, `small bag` is collapsed by the char-GRU into one semantic vector before the BlockNeuron ever sees it. X2 keeps object identity and quality as separate receptor populations until they meet inside the shared block.
 
-See [`GATE0X2_RECEPTOR_COMPOSITION.md`](GATE0X2_RECEPTOR_COMPOSITION.md) on the X2 branch / PR #3.
+See [`GATE0X2_RECEPTOR_COMPOSITION.md`](GATE0X2_RECEPTOR_COMPOSITION.md).
 
 ## Visual receipts
 
