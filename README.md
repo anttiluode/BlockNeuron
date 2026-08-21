@@ -95,11 +95,42 @@ That tie is now unsurprising: multiplicative gating, hypernetworks and related c
 
 See [`docs/GATE0.md`](docs/GATE0.md) and [`docs/PRIOR_ART.md`](docs/PRIOR_ART.md).
 
+## Gate 0R — passing computational modes
+
+Phase does **not** have to be a clean address. The Janus-style bleed between phase slots suggests a better abstraction: a rhythm can move one fixed stateful substrate through a sequence of overlapping effective operators.
+
+The first executable instrument uses two phase paths that contain the same phase anchors, begin at phase zero, and end at phase zero. Only traversal order differs. Because the operators do not commute, the accumulated internal state computes a different mapping for each path.
+
+```text
+phase trajectory
+      ↓
+W_eff(phi_0), W_eff(phi_1), ...
+      ↓
+ordered state updates
+      ↓
+whole-cycle computation
+```
+
+The phase windows are deliberately soft: at an anchor the dominant mode is about `0.907`, while each immediate neighbor still contributes about `0.045`.
+
+A matched 16-parameter Fourier-conditioned recurrent attacker solves the toy too, so the claim is not unique expressivity. The useful statement is narrower:
+
+> **In a stateful system, phase can organize computation through the path taken around the cycle rather than act as a discrete memory address.**
+
+Run:
+
+```bash
+python experiments/gate0r_passing_modes.py
+```
+
+See [`docs/GATE0R_PASSING_MODES.md`](docs/GATE0R_PASSING_MODES.md).
+
 ## Gate ladder
 
 | Gate | Question | Main attacker / score |
 |---|---|---|
 | 0 | Can low-dimensional mode/phase make one fixed substrate behave like different effective graphs? | hyperlinear / FiLM / DGN-style random half-space gating |
+| 0R | Can rhythm act as an **ordered orbit of passing computational modes**, not merely a phase address? | matched Fourier/time-conditioned recurrence; reverse/clamp the phase path |
 | 0b | Can a shared oscillatory/field operator select useful dynamic connectivity with less explicit routing? | explicit pairwise router, low-rank router, random/matched-smooth bases; **score wiring/description/communication cost at matched error** |
 | 1 | Do **persistent** dendritic compartments buy temporal/context multiplexing at matched parameters/state? | GRU / SSM / FiLM / instantaneous DGN gates |
 | 2 | Can pre/post eligibility + delayed modulator learn without immediate weight updates? | BPTT / e-prop / canonical three-factor controls |
@@ -118,6 +149,7 @@ Several old results are too close to ignore:
 - **Sezener et al. (2021/22), Dendritic Gated Networks:** fixed random half-space gates select dendritic branches; local learning is data-efficient and resistant to forgetting. Random gating is therefore a mandatory attacker, not a weak baseline.
 - **Von der Malsburg (1981):** fast synaptic modulation / temporary functional links on fixed anatomy.
 - **Hoppensteadt & Izhikevich (1999):** a common forced medium imposes dynamic connectivity among oscillators; importantly, they make an `O(n)` junctions versus `O(n^2)` explicit-connections resource argument.
+- **Hasselmo / Siegle & Wilson / Colgin & Wilson:** theta phase can organize distinct encoding/retrieval or information-processing regimes within an oscillatory cycle. Passing computational modes are therefore biological precedent, not a new principle.
 - **Bargmann (2012):** one anatomical wiring diagram can encode multiple functional circuits, some active and some latent under neuromodulatory state.
 - **Tsodyks & Markram (1997):** synaptic state changes what temporal feature a connection transmits; future `S(z)` should start from canonical short-term-plasticity baselines.
 - **Jayakumar et al. (ICLR 2020):** gating, attention, hypernetworks and dynamic convolution can be viewed through multiplicative interactions. Gate 0's BLOCK/HYPER tie is therefore expected; expressivity is not the interesting axis.
@@ -130,6 +162,7 @@ The old literature does **not** collapse the whole BlockNeuron ladder. In partic
 As of August 2026, essentially every ingredient also has a serious modern neighboring literature:
 
 - **Dendritic architectures:** Chavlis & Poirazi (Nature Communications, 2025) show structured dendritic ANNs can match/outperform vanilla ANNs with substantially fewer trainable parameters on several image tasks.
+- **Single-neuron functional complexity:** Beniaguev, Segev & London (Neuron, 2021) found that emulating a detailed cortical pyramidal neuron required a temporally convolutional DNN roughly 5–8 layers deep, with complexity arising from the interaction of dendritic morphology and NMDA nonlinearities. Aizenbud et al. (PNAS, 2026) extend this framework across human and rat cortical neurons and find morphology is a major determinant of functional complexity, further amplified by nonlinear NMDA integration.
 - **Dendritic state as computation:** DendriCL (Shen, Wu & Chen, July 2026) embeds leaky online LMS in the subthreshold dynamics of one apical compartment, with fixed inference-time synaptic weights.
 - **Dendrites + local/biologically motivated learning:** Kubo (May 2026) combines dendritic networks with equilibrium propagation and reports advantages over standard EP on harder/deeper settings.
 - **Dendrites + temporal waves:** Kubo's Dendritic Wave RNN (July 2026) combines nonlinear basal dendrites with traveling-wave recurrent dynamics.
@@ -140,6 +173,18 @@ As of August 2026, essentially every ingredient also has a serious modern neighb
 - **Growth/development:** Neural Developmental Programs grow networks through local communication; Butkus et al. (2026) optimize growth in breadth, depth, and time; Barabási & Barabási's genetic-connectome model generates wiring from neuronal identity and compatibility rather than explicit pair decisions.
 
 So the plausible open slot is **not** "nobody studies dendrites/oscillations/modulation/growth." It is whether a compact unit combining a few mechanisms produces a measurable **resource or learning advantage** over ordinary conditional/recurrent/sparse machinery and over historical dendritic/oscillatory baselines.
+
+The current working picture is increasingly less like a bank of phase-addressed memories and more like a **structured reusable microcircuit**:
+
+```text
+slow morphology / weights define possibilities
+            ↓
+fast contact + dendritic state carry local history
+            ↓
+oscillation moves the block through transient effective operators
+            ↓
+one cycle composes those operators into computation
+```
 
 ## Related repos in this project family
 
@@ -160,6 +205,8 @@ Historical anchors:
 - Tsodyks & Markram, *The neural code between neocortical pyramidal neurons depends on neurotransmitter release probability* (PNAS, 1997), DOI `10.1073/pnas.94.2.719`
 - Hoppensteadt & Izhikevich, *Oscillatory Neurocomputers with Dynamic Connectivity* (PRL, 1999), DOI `10.1103/PhysRevLett.82.2983`
 - Poirazi & Mel, *Impact of Active Dendrites and Structural Plasticity on the Memory Capacity of Neural Tissue* (Neuron, 2001), DOI `10.1016/S0896-6273(01)00252-5`
+- Siegle & Wilson, *Enhancement of encoding and retrieval functions through theta phase-specific manipulation of hippocampus* (eLife, 2014), DOI `10.7554/eLife.03061`
+- Colgin & Wilson, *Phase organization of network computations* (Current Opinion in Neurobiology, 2015), DOI `10.1016/j.conb.2014.12.011`
 - Bargmann, *Beyond the connectome: How neuromodulators shape neural circuits* (BioEssays, 2012), PMID `22396302`
 - Noest, *Phasor Neural Networks* (NIPS 1987 proceedings / 1988 publication)
 - Jayakumar et al., *Multiplicative Interactions and Where to Find Them* (ICLR 2020)
@@ -168,11 +215,13 @@ Historical anchors:
 Recent neighbors:
 
 - Barabási & Barabási, *A Genetic Model of the Connectome* (Neuron, 2020), DOI `10.1016/j.neuron.2019.10.031`
+- Beniaguev, Segev & London, *Single cortical neurons as deep artificial neural networks* (Neuron, 2021), DOI `10.1016/j.neuron.2021.07.002`
 - Najarro, Sudhakaran & Risi, *Towards Self-Assembling Artificial Neural Networks through Neural Developmental Programs* (2023), arXiv `2307.08197`
 - Huang et al., scalable deep dendritic SNN / branch gating work, arXiv `2412.06355`
 - Chavlis & Poirazi, *Dendrites endow artificial neural networks with accurate, robust and parameter-efficient learning* (2025), DOI `10.1038/s41467-025-56297-9`
 - Miyato et al., *Artificial Kuramoto Oscillatory Neurons* (ICLR 2025 Oral)
 - Lei, Gu & Gao, *Dendritic Learning for AI: A Survey...* (2026), DOI `10.53941/jaia.2026.100006`
+- Aizenbud et al., *Dendritic morphology and synaptic nonlinearities enhance functional complexity in human cortical neurons* (PNAS, 2026), DOI `10.1073/pnas.2533168123`
 - Shen, Wu & Chen, *Dendritic In-Context Learning in a Single-Layer Spiking Neural Network* (2026), arXiv `2607.02283`
 - Kubo, *Dendritic Neural Networks with Equilibrium Propagation* (2026), arXiv `2605.08135`
 - Xiao et al., *Kuramoto Oscillatory Phase Encoding* (2026), arXiv `2604.07904`
@@ -183,4 +232,4 @@ Recent neighbors:
 
 ## Status
 
-**Gate-0 research prototype. No novelty claim. No biological-equivalence claim.**
+**Gate-0 / Gate-0R research prototype. No novelty claim. No biological-equivalence claim.**
