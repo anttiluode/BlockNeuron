@@ -33,7 +33,6 @@ import random
 import sys
 
 import numpy as np
-from PIL import Image, ImageDraw
 import torch
 from torch import Tensor, nn
 import torch.nn.functional as F
@@ -252,6 +251,8 @@ def save_grid(
     scale: int = 4,
 ) -> None:
     """Save [rows, cols, 1, H, W] as a labelled grayscale sheet."""
+    from PIL import Image, ImageDraw
+
     x = images.detach().float().cpu().clamp(0, 1)
     if x.ndim == 4:
         x = x[:, None]
