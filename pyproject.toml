@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "blockneuron"
+version = "0.0.1"
+description = "Falsifiable experiments one abstraction level above a point neuron"
+requires-python = ">=3.10"
+dependencies = ["torch>=2.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
