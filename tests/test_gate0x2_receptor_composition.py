@@ -13,6 +13,10 @@ from experiments.gate0x1_fashion_compositional import (
     heldout_pairs,
     seen_pairs,
 )
+from experiments.gate0x2_receptor_composition import (
+    compute_losses,
+    evaluate_compositions,
+)
 
 
 def tiny_model() -> ReceptorCompositionModel:
@@ -101,3 +105,38 @@ def test_x2_uses_same_strict_compositional_split_as_x1() -> None:
             for attr in range(len(ATTRIBUTES))
             if attr != HOLDOUT_ATTR[label]
         )
+
+
+def test_x2_loss_and_all_40_composition_eval_are_executable() -> None:
+    torch.manual_seed(11)
+    model = tiny_model()
+    image = torch.rand(4, 1, 28, 28)
+    labels = torch.tensor([0, 1, 2, 3])
+    visual_attrs = torch.tensor([1, 2, 3, 0])
+    receptor_attrs = visual_attrs.clone()
+    prototype = torch.rand(4, 1, 28, 28)
+
+    loss, metrics = compute_losses(
+        model,
+        image,
+        labels,
+        visual_attrs,
+        receptor_attrs,
+        prototype,
+        phase_mode="dynamic",
+    )
+    assert torch.isfinite(loss)
+    assert set(metrics) == {"loss", "recon", "public", "align", "class", "attr"}
+    loss.backward()
+    assert model.block.input_weight.grad is not None
+
+    prototype_bank = torch.rand(10, 4, 1, 28, 28)
+    eval_metrics, grid, public_grid = evaluate_compositions(
+        model,
+        prototype_bank,
+        device=torch.device("cpu"),
+        phase_mode="dynamic",
+    )
+    assert grid.shape == (10, 4, 1, 28, 28)
+    assert public_grid.shape == (10, 4, 5)
+    assert "heldout_visual_nn_joint" in eval_metrics
