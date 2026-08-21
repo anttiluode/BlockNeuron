@@ -7,7 +7,7 @@ name = "blockneuron"
 version = "0.0.1"
 description = "Falsifiable experiments one abstraction level above a point neuron"
 requires-python = ">=3.10"
-dependencies = ["torch>=2.0"]
+dependencies = ["torch>=2.0", "numpy>=1.26"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
