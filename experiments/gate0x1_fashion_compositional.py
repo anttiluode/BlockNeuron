@@ -9,7 +9,7 @@ This keeps the Gate 0X0 anti-cheat and makes the task harder:
 * Hold out exactly one class/attribute combination per class.
 * The model sees every class and every attribute during training, but NEVER the
   ten held-out combinations.
-* Text receives no pixel, class, or attribute supervision.
+* The text-only path receives no direct pixel, class, or attribute target.
 * Image-derived public state is taught class and attribute structure.
 * At test time, text-only queries for unseen combinations must compose the two.
 
