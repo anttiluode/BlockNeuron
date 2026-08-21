@@ -20,3 +20,4 @@ jobs:
       - run: pytest -q
       - run: python experiments/gate0_same_mass_different_machine.py --steps 300
       - run: python experiments/gate0r_passing_modes.py --steps 300
+      - run: python experiments/gate0h_hysteretic_matter.py --trials 200
