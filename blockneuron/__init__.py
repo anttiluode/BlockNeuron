@@ -8,6 +8,15 @@ from .core import (
     mode_gain,
     phase_gain,
 )
+from .crossmodal import (
+    CharTokenizer,
+    CoordinateImageDecoder,
+    CrossModalBlockModel,
+    CrossModalConfig,
+    ResonantCrossModalBlock,
+    TinyImageEncoder,
+    TinyTextEncoder,
+)
 
 __all__ = [
     "BlockNeuronLayer",
@@ -18,4 +27,11 @@ __all__ = [
     "effective_conductance",
     "mode_gain",
     "phase_gain",
+    "CharTokenizer",
+    "CoordinateImageDecoder",
+    "CrossModalBlockModel",
+    "CrossModalConfig",
+    "ResonantCrossModalBlock",
+    "TinyImageEncoder",
+    "TinyTextEncoder",
 ]
